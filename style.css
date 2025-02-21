@@ -1,0 +1,53 @@
+/* 全体の基本スタイル */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+/* ヘッダー */
+header {
+  background-color: #3a3a7d;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+}
+
+#search-bar {
+  padding: 5px;
+  font-size: 16px;
+}
+
+/* ギャラリー */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.illustration {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.illustration img {
+  width: 100%;
+  display: block;
+}
+
+.illustration .info {
+  padding: 10px;
+  text-align: center;
+}
