@@ -105,9 +105,20 @@ const overlay = document.createElement("div");
 overlay.id = "imageOverlay";
 document.body.appendChild(overlay);
 
-// クリックされた画像を拡大表示
-document.querySelectorAll(".gallery-item img").forEach(img => {
-  img.addEventListener("click", () => {
+// ギャラリー内の画像ごとにボタンを追加
+document.querySelectorAll(".gallery-item").forEach(item => {
+  const img = item.querySelector("img");
+
+  // 拡大ボタンを作成
+  const expandBtn = document.createElement("button");
+  expandBtn.textContent = "拡大";
+  expandBtn.classList.add("expand-btn");
+
+  // 画像の下にボタンを追加
+  item.appendChild(expandBtn);
+
+  // ボタンクリックで拡大
+  expandBtn.addEventListener("click", () => {
     const enlargedImg = document.createElement("img");
     enlargedImg.src = img.src;
     overlay.innerHTML = ""; // 前の画像をクリア
