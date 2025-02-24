@@ -26,10 +26,15 @@ function displayIllustrations(data) {
       <h3>${illust.title}</h3>
       <p>タグ: ${illust.tags.join(', ')}</p>
       <p>追加日: ${illust.date}</p>
+      <button class="expand-btn">拡大</button> <!-- ここでボタン追加 -->
     `;
     gallery.appendChild(item);
   });
+
+  // ここで拡大機能を適用する
+  addExpandEvent();
 }
+
 
 // ページ読み込み時にデータを取得して表示
 loadIllustrations();
@@ -101,32 +106,42 @@ function filterIllustrations() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // オーバーレイ用の要素を作成
-  const overlay = document.createElement("div");
-  overlay.id = "imageOverlay";
-  overlay.style.display = "none"; // 初期状態で非表示
-  document.body.appendChild(overlay);
+  // すでにオーバーレイがない場合は作成する
+  let overlay = document.getElementById("imageOverlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "imageOverlay";
+    overlay.style.position = "fixed";filterIllustrations
+    overlay.style.top = "0";
+    overlay.style.left = "0";
+    overlay.style.width = "100%";
+    overlay.style.height = "100%";
+    overlay.style.background = "rgba(0, 0, 0, 0.8)";
+    overlay.style.display = "none";
+    overlay.style.justifyContent = "center";
+    overlay.style.alignItems = "center";
+    overlay.style.zIndex = "1000"; // 画面最前面に
+    document.body.appendChild(overlay);
+  }
 
   // クリックで閉じる処理
   overlay.addEventListener("click", () => {
     overlay.style.display = "none";
-    overlay.innerHTML = ""; // 画像を消去
+    overlay.innerHTML = "";
   });
 
   function addExpandButtons() {
     document.querySelectorAll(".gallery-item").forEach(item => {
-      if (!item.querySelector(".expand-btn")) { // すでにボタンがある場合は追加しない
+      if (!item.querySelector(".expand-btn")) {
         const img = item.querySelector("img");
 
         // 拡大ボタンを作成
         const expandBtn = document.createElement("button");
         expandBtn.textContent = "拡大";
         expandBtn.classList.add("expand-btn");
-
-        // 画像の下にボタンを追加
         item.appendChild(expandBtn);
 
-        // ボタンクリックで拡大
+        // クリックで拡大処理
         expandBtn.addEventListener("click", () => {
           const enlargedImg = document.createElement("img");
           enlargedImg.src = img.src;
@@ -135,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
           enlargedImg.style.borderRadius = "10px";
           enlargedImg.style.boxShadow = "0 5px 15px rgba(255, 255, 255, 0.2)";
 
-          overlay.innerHTML = ""; // 前の画像をクリア
+          overlay.innerHTML = ""; // 既存の内容をクリア
           overlay.appendChild(enlargedImg);
           overlay.style.display = "flex"; // 表示
         });
@@ -143,13 +158,58 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ページ読み込み時に拡大ボタンを追加
+  // 初回実行
   addExpandButtons();
 
-  // ギャラリーが動的に更新される場合に対応
+  // ギャラリーが動的に更新される場合の対策
   const observer = new MutationObserver(() => {
     addExpandButtons();
   });
 
   observer.observe(document.getElementById("gallery"), { childList: true });
 });
+
+function createOverlay() {
+  let overlay = document.createElement("div");
+  overlay.id = "imageOverlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.background = "rgba(0, 0, 0, 0.8)";
+  overlay.style.display = "none";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+  overlay.style.zIndex = "1000";
+  
+  overlay.addEventListener("click", () => {
+    overlay.style.display = "none";
+    overlay.innerHTML = "";
+  });
+
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function addExpandEvent() {
+  const expandButtons = document.querySelectorAll(".expand-btn");
+  expandButtons.forEach(button => {
+    button.addEventListener("click", (event) => {
+      const img = event.target.parentElement.querySelector("img");
+
+      const overlay = document.getElementById("imageOverlay") || createOverlay();
+
+      const enlargedImg = document.createElement("img");
+      enlargedImg.src = img.src;
+      enlargedImg.style.maxWidth = "90%";
+      enlargedImg.style.maxHeight = "90%";
+      enlargedImg.style.borderRadius = "10px";
+      enlargedImg.style.boxShadow = "0 5px 15px rgba(255, 255, 255, 0.2)";
+
+      overlay.innerHTML = "";
+      overlay.appendChild(enlargedImg);
+      overlay.style.display = "flex";
+    });
+  });
+}
