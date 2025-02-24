@@ -38,8 +38,11 @@ header h1 {
 }
 
 .tag-btn.active {
-  background-color: #ff6600; /* オレンジ色 */
+  background-color: #ff6600;
   color: white;
+  border: 2px solid #cc5500;
+  box-shadow: 0 0 10px rgba(255, 102, 0, 0.5);
+  transform: scale(1.1);
 }
 
 
