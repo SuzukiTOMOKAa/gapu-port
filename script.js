@@ -99,3 +99,24 @@ function filterIllustrations() {
 
   displayIllustrations(filtered);
 }
+
+// オーバーレイ用の要素を作成
+const overlay = document.createElement("div");
+overlay.id = "imageOverlay";
+document.body.appendChild(overlay);
+
+// クリックされた画像を拡大表示
+document.querySelectorAll(".gallery-item img").forEach(img => {
+  img.addEventListener("click", () => {
+    const enlargedImg = document.createElement("img");
+    enlargedImg.src = img.src;
+    overlay.innerHTML = ""; // 前の画像をクリア
+    overlay.appendChild(enlargedImg);
+    overlay.classList.add("active");
+  });
+});
+
+// 画像の外側をクリックすると閉じる
+overlay.addEventListener("click", () => {
+  overlay.classList.remove("active");
+});

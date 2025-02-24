@@ -99,3 +99,34 @@ header h1 {
   padding: 10px;
   text-align: center;
 }
+
+/* オーバーレイ（拡大時の背景） */
+#imageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8); /* 黒の半透明 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* 拡大された画像 */
+#imageOverlay img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* オーバーレイを表示するクラス */
+#imageOverlay.active {
+  opacity: 1;
+  visibility: visible;
+}
