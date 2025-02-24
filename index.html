@@ -4,18 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>イラストポートフォリオ</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <header>
-    <h1>イラストポートフォリオ</h1>
-    <nav>
-      <input type="text" id="search-bar" placeholder="検索...">
-    </nav>
-  </header>
-  <main id="gallery">
+  <h1>イラストポートフォリオ</h1>
+
+  <input type="text" id="searchBox" placeholder="イラスト名で検索">
+
+  <div id="tagFilter">
+    <button class="tag-btn" data-tag="可愛い">可愛い</button>
+    <button class="tag-btn" data-tag="幻想的">幻想的</button>
+    <button class="tag-btn" data-tag="シリアス">シリアス</button>
+    <button class="tag-btn" data-tag="ポップ">ポップ</button>
+
+  </div>
+
+  <select id="sortOption">
+    <option value="newest">新しい順</option>
+    <option value="oldest">古い順</option>
+    <option value="titleAsc">タイトル昇順 (A→Z)</option>
+    <option value="titleDesc">タイトル降順 (Z→A)</option>
+  </select>
+
+  <div id="gallery">
     <!-- イラストがここに表示される -->
-  </main>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
