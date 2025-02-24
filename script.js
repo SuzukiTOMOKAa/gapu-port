@@ -100,34 +100,56 @@ function filterIllustrations() {
   displayIllustrations(filtered);
 }
 
-// オーバーレイ用の要素を作成
-const overlay = document.createElement("div");
-overlay.id = "imageOverlay";
-document.body.appendChild(overlay);
+document.addEventListener("DOMContentLoaded", () => {
+  // オーバーレイ用の要素を作成
+  const overlay = document.createElement("div");
+  overlay.id = "imageOverlay";
+  overlay.style.display = "none"; // 初期状態で非表示
+  document.body.appendChild(overlay);
 
-// ギャラリー内の画像ごとにボタンを追加
-document.querySelectorAll(".gallery-item").forEach(item => {
-  const img = item.querySelector("img");
-
-  // 拡大ボタンを作成
-  const expandBtn = document.createElement("button");
-  expandBtn.textContent = "拡大";
-  expandBtn.classList.add("expand-btn");
-
-  // 画像の下にボタンを追加
-  item.appendChild(expandBtn);
-
-  // ボタンクリックで拡大
-  expandBtn.addEventListener("click", () => {
-    const enlargedImg = document.createElement("img");
-    enlargedImg.src = img.src;
-    overlay.innerHTML = ""; // 前の画像をクリア
-    overlay.appendChild(enlargedImg);
-    overlay.classList.add("active");
+  // クリックで閉じる処理
+  overlay.addEventListener("click", () => {
+    overlay.style.display = "none";
+    overlay.innerHTML = ""; // 画像を消去
   });
-});
 
-// 画像の外側をクリックすると閉じる
-overlay.addEventListener("click", () => {
-  overlay.classList.remove("active");
+  function addExpandButtons() {
+    document.querySelectorAll(".gallery-item").forEach(item => {
+      if (!item.querySelector(".expand-btn")) { // すでにボタンがある場合は追加しない
+        const img = item.querySelector("img");
+
+        // 拡大ボタンを作成
+        const expandBtn = document.createElement("button");
+        expandBtn.textContent = "拡大";
+        expandBtn.classList.add("expand-btn");
+
+        // 画像の下にボタンを追加
+        item.appendChild(expandBtn);
+
+        // ボタンクリックで拡大
+        expandBtn.addEventListener("click", () => {
+          const enlargedImg = document.createElement("img");
+          enlargedImg.src = img.src;
+          enlargedImg.style.maxWidth = "90%";
+          enlargedImg.style.maxHeight = "90%";
+          enlargedImg.style.borderRadius = "10px";
+          enlargedImg.style.boxShadow = "0 5px 15px rgba(255, 255, 255, 0.2)";
+
+          overlay.innerHTML = ""; // 前の画像をクリア
+          overlay.appendChild(enlargedImg);
+          overlay.style.display = "flex"; // 表示
+        });
+      }
+    });
+  }
+
+  // ページ読み込み時に拡大ボタンを追加
+  addExpandButtons();
+
+  // ギャラリーが動的に更新される場合に対応
+  const observer = new MutationObserver(() => {
+    addExpandButtons();
+  });
+
+  observer.observe(document.getElementById("gallery"), { childList: true });
 });
