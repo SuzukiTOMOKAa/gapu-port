@@ -32,7 +32,9 @@ function displayIllustrations(data) {
   });
 
   // 拡大イベントを適用
+  console.log("拡大イベント適用");
   addExpandEvent();
+  console.log("拡大イベント適用");
 }
 
 // ページ読み込み時にデータを取得して表示
