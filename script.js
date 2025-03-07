@@ -14,7 +14,6 @@ async function loadIllustrations() {
   displayIllustrations(illustrations);
 }
 
-// イラストを表示する関数
 function displayIllustrations(data) {
   gallery.innerHTML = "";
 
@@ -31,10 +30,8 @@ function displayIllustrations(data) {
     gallery.appendChild(item);
   });
 
-  // 拡大イベントを適用
-  console.log("拡大イベント適用1");
+  // イラストを追加した後に拡大イベントを適用
   addExpandEvent();
-  console.log("拡大イベント適用2");
 }
 
 // ページ読み込み時にデータを取得して表示
@@ -99,34 +96,55 @@ function filterIllustrations() {
 // オーバーレイを作成する関数
 function createOverlay() {
   let overlay = document.getElementById("imageOverlay");
-  if (!overlay) {
-    overlay = document.createElement("div");
-    overlay.id = "imageOverlay";
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.background = "rgba(0, 0, 0, 0.8)";
-    overlay.style.display = "none";
-    overlay.style.justifyContent = "center";
-    overlay.style.alignItems = "center";
-    overlay.style.zIndex = "1000";
-    overlay.addEventListener("click", () => {
-      overlay.style.display = "none";
-      overlay.innerHTML = "";
-    });
-    document.body.appendChild(overlay);
+  if (overlay) {
+    console.log("すでにオーバーレイが存在します");
+    return overlay;
   }
+  
+  console.log("オーバーレイを新しく作成");
+  overlay = document.createElement("div");
+  overlay.id = "imageOverlay";
+  overlay.style.position = "fixed";
+  overlay.style.top = "0";
+  overlay.style.left = "0";
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.background = "rgba(0, 0, 0, 0.8)";
+  overlay.style.display = "none";
+  overlay.style.justifyContent = "center";
+  overlay.style.alignItems = "center";
+  overlay.style.zIndex = "1000";
+  overlay.addEventListener("click", () => {
+    overlay.style.display = "none";
+    overlay.innerHTML = "";
+  });
+
+  document.body.appendChild(overlay);
   return overlay;
 }
+
 
 // 拡大ボタンのイベントを追加
 function addExpandEvent() {
   const expandButtons = document.querySelectorAll(".expand-btn");
+  console.log(`拡大ボタン数: ${expandButtons.length}`);
+
+  if (expandButtons.length === 0) {
+    console.error("拡大ボタンが見つかりません！");
+    return;
+  }
+
   expandButtons.forEach(button => {
+    console.log("拡大ボタンにイベントを適用します:", button);
     button.addEventListener("click", (event) => {
+      console.log("✅ 拡大ボタンがクリックされました！"); // ここでクリック検出を確認
+
       const img = event.target.parentElement.querySelector("img");
+      if (!img) {
+        console.error("⚠ 画像が見つかりません！");
+        return;
+      }
+
       const overlay = createOverlay();
       const enlargedImg = document.createElement("img");
       enlargedImg.src = img.src;
@@ -137,6 +155,9 @@ function addExpandEvent() {
       overlay.innerHTML = "";
       overlay.appendChild(enlargedImg);
       overlay.style.display = "flex";
+
+      console.log("✅ 画像をオーバーレイに表示しました！");
     });
   });
 }
+
