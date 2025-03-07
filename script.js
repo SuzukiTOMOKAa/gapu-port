@@ -8,12 +8,16 @@ let selectedTags = new Set(); // 選択中のタグを管理
 
 // JSONデータを取得
 async function loadIllustrations() {
-  const response = await fetch('illustrations.json');
-  const data = await response.json();
-  illustrations = data;
-  displayIllustrations(illustrations);
+  try {
+    const response = await fetch('illustrations.json');
+    illustrations = await response.json();
+    displayIllustrations(illustrations);
+  } catch (error) {
+    console.error("❌ イラストデータの読み込みに失敗:", error);
+  }
 }
 
+// イラストを表示する関数
 function displayIllustrations(data) {
   gallery.innerHTML = "";
 
@@ -30,12 +34,9 @@ function displayIllustrations(data) {
     gallery.appendChild(item);
   });
 
-  // イラストを追加した後に拡大イベントを適用
+  console.log("🖼 イラストを表示完了");
   addExpandEvent();
 }
-
-// ページ読み込み時にデータを取得して表示
-loadIllustrations();
 
 // 検索処理（タイトル & タグ）
 searchBox.addEventListener('input', filterIllustrations);
@@ -62,6 +63,7 @@ sortOption.addEventListener('change', filterIllustrations);
 function filterIllustrations() {
   let filtered = [...illustrations];
   const keyword = searchBox.value.toLowerCase();
+
   if (keyword) {
     filtered = filtered.filter(illust =>
       illust.title.toLowerCase().includes(keyword) ||
@@ -93,71 +95,44 @@ function filterIllustrations() {
   displayIllustrations(filtered);
 }
 
-// オーバーレイを作成する関数
+// オーバーレイ要素を作成
 function createOverlay() {
   let overlay = document.getElementById("imageOverlay");
-  if (overlay) {
-    console.log("すでにオーバーレイが存在します");
-    return overlay;
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.id = "imageOverlay";
+    overlay.classList.add("overlay");
+    overlay.innerHTML = `<img id="overlayImage" src="" alt="拡大画像"><span id="closeOverlay">&times;</span>`;
+    
+    document.body.appendChild(overlay);
+    
+    // 閉じる処理
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay || e.target.id === "closeOverlay") {
+        overlay.classList.remove("active");
+      }
+    });
   }
-  
-  console.log("オーバーレイを新しく作成");
-  overlay = document.createElement("div");
-  overlay.id = "imageOverlay";
-  overlay.style.position = "fixed";
-  overlay.style.top = "0";
-  overlay.style.left = "0";
-  overlay.style.width = "100%";
-  overlay.style.height = "100%";
-  overlay.style.background = "rgba(0, 0, 0, 0.8)";
-  overlay.style.display = "none";
-  overlay.style.justifyContent = "center";
-  overlay.style.alignItems = "center";
-  overlay.style.zIndex = "1000";
-  overlay.addEventListener("click", () => {
-    overlay.style.display = "none";
-    overlay.innerHTML = "";
-  });
-
-  document.body.appendChild(overlay);
   return overlay;
 }
 
-
 // 拡大ボタンのイベントを追加
 function addExpandEvent() {
-  const expandButtons = document.querySelectorAll(".expand-btn");
-  console.log(`拡大ボタン数: ${expandButtons.length}`);
+  const overlay = createOverlay();
+  const overlayImage = overlay.querySelector("#overlayImage");
 
-  if (expandButtons.length === 0) {
-    console.error("拡大ボタンが見つかりません！");
-    return;
-  }
-
-  expandButtons.forEach(button => {
-    console.log("拡大ボタンにイベントを適用します:", button);
+  document.querySelectorAll(".expand-btn").forEach(button => {
     button.addEventListener("click", (event) => {
-      console.log("✅ 拡大ボタンがクリックされました！"); // ここでクリック検出を確認
-
       const img = event.target.parentElement.querySelector("img");
-      if (!img) {
-        console.error("⚠ 画像が見つかりません！");
-        return;
+      if (img) {
+        overlayImage.src = img.src;
+        overlay.classList.add("active");
+      } else {
+        console.error("❌ 画像が見つかりません");
       }
-
-      const overlay = createOverlay();
-      const enlargedImg = document.createElement("img");
-      enlargedImg.src = img.src;
-      enlargedImg.style.maxWidth = "90%";
-      enlargedImg.style.maxHeight = "90%";
-      enlargedImg.style.borderRadius = "10px";
-      enlargedImg.style.boxShadow = "0 5px 15px rgba(255, 255, 255, 0.2)";
-      overlay.innerHTML = "";
-      overlay.appendChild(enlargedImg);
-      overlay.style.display = "flex";
-
-      console.log("✅ 画像をオーバーレイに表示しました！");
     });
   });
 }
 
+// ページ読み込み時にデータを取得して表示
+loadIllustrations();

@@ -119,30 +119,37 @@ header h1 {
 }
 
 /* オーバーレイ */
-#imageOverlay {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8); /* 半透明の背景 */
-  display: flex;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
   justify-content: center;
   align-items: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease-in-out;
+  z-index: 1000;
 }
 
-#imageOverlay img {
+.overlay img {
   max-width: 90%;
   max-height: 90%;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(255, 255, 255, 0.2);
 }
 
+/* 閉じるボタン */
+#closeOverlay {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
 /* 表示用クラス */
-#imageOverlay.active {
-  opacity: 1;
-  visibility: visible;
+.overlay.active {
+  display: flex !important;
 }
